@@ -20,6 +20,50 @@ def svi_total_variance(
     return a + b * (rho * x + np.sqrt(x**2 + sigma**2))
 
 
+def svi_density_proxy(
+    k: np.ndarray,
+    a: float,
+    b: float,
+    rho: float,
+    m: float,
+    sigma: float,
+    dk: float = 1e-3,
+) -> np.ndarray:
+    """
+    Proxy de densité risk-neutral via dérivée seconde discrète de w
+    (signe du butterfly : g(k) ∝ ∂²C/∂K² > 0 si pas d'arbitrage butterfly).
+    On renvoie g(k) = (1 - k w'/w)^2 - 0.25 w'^2 (1/w + 0.25) + 0.5 w''
+    (Gatheral, formule classique pour SVI).
+    """
+    k = np.asarray(k, dtype=float)
+    wp = (
+        svi_total_variance(k + dk, a, b, rho, m, sigma)
+        - svi_total_variance(k - dk, a, b, rho, m, sigma)
+    ) / (2 * dk)
+    wpp = (
+        svi_total_variance(k + dk, a, b, rho, m, sigma)
+        - 2 * svi_total_variance(k, a, b, rho, m, sigma)
+        + svi_total_variance(k - dk, a, b, rho, m, sigma)
+    ) / (dk**2)
+    w = svi_total_variance(k, a, b, rho, m, sigma)
+    g = (1.0 - 0.5 * k * wp / w) ** 2 - 0.25 * wp**2 * (1.0 / w + 0.25) + 0.5 * wpp
+    return g
+
+
+def butterfly_arbitrage_free(
+    k: np.ndarray,
+    a: float,
+    b: float,
+    rho: float,
+    m: float,
+    sigma: float,
+    tol: float = -1e-8,
+) -> bool:
+    """Vrai si g(k) ≥ tol sur la grille (pas d'arbitrage butterfly détecté)."""
+    g = svi_density_proxy(k, a, b, rho, m, sigma)
+    return bool(np.all(g >= tol))
+
+
 def calibrate_svi(
     k: np.ndarray,
     w_market: np.ndarray,
@@ -32,7 +76,6 @@ def calibrate_svi(
     k = np.asarray(k, dtype=float)
     w_market = np.asarray(w_market, dtype=float)
     if x0 is None:
-        # heuristique raisonnable
         x0 = np.array([
             float(np.min(w_market) * 0.5),
             0.2,
@@ -43,11 +86,9 @@ def calibrate_svi(
 
     def residuals(theta: np.ndarray) -> np.ndarray:
         a, b, rho, m, sig = theta
-        # pénalités via transformation douce dans residuals
         w = svi_total_variance(k, a, b, rho, m, sig)
         return w - w_market
 
-    # bornes
     lb = np.array([-1.0, 1e-6, -0.999, -2.0, 1e-4])
     ub = np.array([2.0, 5.0, 0.999, 2.0, 2.0])
     res = least_squares(residuals, x0, bounds=(lb, ub), method="trf")
@@ -82,3 +123,28 @@ def make_synthetic_smile(
         w = np.maximum(w, 1e-6)
     iv = np.sqrt(w / T)
     return K, iv, w
+
+
+def build_svi_surface(
+    maturities: np.ndarray,
+    params_by_T: list[tuple[float, float, float, float, float]],
+    F: float = 100.0,
+    k_grid: np.ndarray | None = None,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """
+    Construit une surface w(k,T) tranche par tranche (SVI raw par maturité).
+    Retourne (k_grid, maturities, W) avec W.shape = (n_T, n_k).
+    """
+    maturities = np.asarray(maturities, dtype=float)
+    if k_grid is None:
+        k_grid = np.linspace(-0.4, 0.4, 81)
+    else:
+        k_grid = np.asarray(k_grid, dtype=float)
+    W = np.zeros((len(maturities), len(k_grid)))
+    for i, (T, params) in enumerate(zip(maturities, params_by_T)):
+        a, b, rho, m, sig = params
+        W[i] = svi_total_variance(k_grid, a, b, rho, m, sig)
+        # cohérence calendaire minimale : w croît avec T (projection simple)
+        if i > 0:
+            W[i] = np.maximum(W[i], W[i - 1])
+    return k_grid, maturities, W
