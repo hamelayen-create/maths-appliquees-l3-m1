@@ -6,7 +6,14 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from bs_closed_form import call_price, put_price
+from bs_closed_form import (
+    call_price,
+    put_price,
+    delta_call,
+    gamma,
+    vega,
+    d1_d2,
+)
 from bs_mc import price_call_mc
 from bs_pde import price_call_crank_nicolson
 
@@ -39,3 +46,20 @@ def test_pde_close_to_closed(params):
         n_space=300, n_time=300,
     )
     assert abs(pde - closed) < 0.15
+
+
+def test_atm_greeks_match_report(params):
+    """Ancre les valeurs numériques ATM citées dans report/RAPPORT.md."""
+    d1, d2 = d1_d2(**params)
+    assert abs(d1 - 0.35) < 1e-12
+    assert abs(d2 - 0.15) < 1e-12
+    assert abs(call_price(**params) - 10.450583572185565) < 1e-10
+    assert abs(delta_call(**params) - 0.6368306511756191) < 1e-10
+    assert abs(gamma(**params) - 0.018762017345846895) < 1e-10
+    assert abs(vega(**params) - 37.52403469169379) < 1e-8
+
+
+def test_call_increases_with_sigma(params):
+    c_low = call_price(params["S"], params["K"], params["T"], params["r"], 0.1)
+    c_high = call_price(params["S"], params["K"], params["T"], params["r"], 0.4)
+    assert c_high > c_low

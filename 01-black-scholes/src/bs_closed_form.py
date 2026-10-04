@@ -30,3 +30,19 @@ def put_price(S: float, K: float, T: float, r: float, sigma: float) -> float:
 def delta_call(S: float, K: float, T: float, r: float, sigma: float) -> float:
     d1, _ = d1_d2(S, K, T, r, sigma)
     return float(norm.cdf(d1))
+
+
+def delta_put(S: float, K: float, T: float, r: float, sigma: float) -> float:
+    d1, _ = d1_d2(S, K, T, r, sigma)
+    return float(norm.cdf(d1) - 1.0)
+
+
+def gamma(S: float, K: float, T: float, r: float, sigma: float) -> float:
+    d1, _ = d1_d2(S, K, T, r, sigma)
+    return float(norm.pdf(d1) / (S * sigma * np.sqrt(T)))
+
+
+def vega(S: float, K: float, T: float, r: float, sigma: float) -> float:
+    """Dérivée du prix par rapport à σ (pas par point de pourcentage)."""
+    d1, _ = d1_d2(S, K, T, r, sigma)
+    return float(S * norm.pdf(d1) * np.sqrt(T))
