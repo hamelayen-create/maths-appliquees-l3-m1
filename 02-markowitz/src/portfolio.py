@@ -119,3 +119,118 @@ def simulate_returns(
     mu = R.mean(axis=0) * 252
     cov = np.cov(R, rowvar=False) * 252
     return R, mu, cov
+
+
+def sharpe_ratio(ret: float, vol: float, rf: float = 0.0) -> float:
+    """Ratio de Sharpe (rf annualisé, même unité que ret/vol)."""
+    if vol <= 0:
+        return float("nan")
+    return float((ret - rf) / vol)
+
+
+def sample_covariance(returns: np.ndarray, annualize: bool = True) -> np.ndarray:
+    """Covariance empirique (optionnellement annualisée, 252 jours)."""
+    R = np.asarray(returns, dtype=float)
+    cov = np.cov(R, rowvar=False)
+    if annualize:
+        cov = cov * 252
+    return cov
+
+
+def efficient_frontier_long_only(
+    mu: np.ndarray,
+    cov: np.ndarray,
+    n_points: int = 25,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """
+    Frontière long-only via QP (une cible de rendement par point).
+    Retourne (targets, vols, weights[n_points, n_assets]).
+    """
+    mu = np.asarray(mu, dtype=float)
+    cov = np.asarray(cov, dtype=float)
+    # Cibles réalisables sous w≥0, 1ᵀw=1 : entre min(μ) et max(μ)
+    lo, hi = float(mu.min()), float(mu.max())
+    # éviter les extrêmes trop proches où le QP peut être numériquement fragile
+    eps = 1e-4 * (hi - lo + 1e-12)
+    targets = np.linspace(lo + eps, hi - eps, n_points)
+    vols = np.full(n_points, np.nan)
+    weights = np.full((n_points, len(mu)), np.nan)
+    for i, m in enumerate(targets):
+        try:
+            w = optimize_long_only(mu, cov, target_return=float(m))
+            r, v = portfolio_stats(w, mu, cov)
+            targets[i] = r
+            vols[i] = v
+            weights[i] = w
+        except Exception:  # pragma: no cover
+            continue
+    mask = np.isfinite(vols)
+    return targets[mask], vols[mask], weights[mask]
+
+
+def max_sharpe_weights(
+    mu: np.ndarray,
+    cov: np.ndarray,
+    rf: float = 0.0,
+    long_only: bool = True,
+) -> np.ndarray:
+    """
+    Portefeuille de Sharpe maximal.
+    - long_only=False : formule tangente (sans contrainte de signe)
+    - long_only=True  : balayage sur la frontière QP
+    """
+    mu = np.asarray(mu, dtype=float)
+    cov = np.asarray(cov, dtype=float)
+    if not long_only:
+        excess = mu - rf
+        inv = np.linalg.inv(cov)
+        w = inv @ excess
+        w = w / w.sum()
+        return w
+    targets, vols, weights = efficient_frontier_long_only(mu, cov, n_points=40)
+    sharpes = np.array([sharpe_ratio(t, v, rf) for t, v in zip(targets, vols)])
+    i = int(np.nanargmax(sharpes))
+    return weights[i]
+
+
+def backtest_equity(
+    returns: np.ndarray,
+    weights: np.ndarray,
+    rebalance_every: int = 21,
+) -> np.ndarray:
+    """
+    Courbe de richesse d'un portefeuille à pondérations cibles, rebalancé périodiquement.
+    returns : (T, n), pondérations : (n,), somme ≈ 1.
+    Retourne equity de longueur T+1 (départ à 1).
+    """
+    R = np.asarray(returns, dtype=float)
+    w_target = np.asarray(weights, dtype=float)
+    w_target = w_target / w_target.sum()
+    T, n = R.shape
+    assert n == len(w_target)
+    equity = np.ones(T + 1)
+    w = w_target.copy()
+    for t in range(T):
+        # rendement du portefeuille du jour
+        r_p = float(w @ R[t])
+        equity[t + 1] = equity[t] * (1.0 + r_p)
+        # drift des poids
+        w = w * (1.0 + R[t])
+        w = w / w.sum()
+        if (t + 1) % rebalance_every == 0:
+            w = w_target.copy()
+    return equity
+
+
+def gmv_weights(cov: np.ndarray, long_only: bool = False) -> np.ndarray:
+    """Portefeuille de variance globale minimale (GMV)."""
+    cov = np.asarray(cov, dtype=float)
+    n = cov.shape[0]
+    if not long_only:
+        inv = np.linalg.inv(cov)
+        ones = np.ones(n)
+        w = inv @ ones
+        return w / w.sum()
+    # long-only : QP sans contrainte de rendement (cible très basse)
+    mu_dummy = np.zeros(n)
+    return optimize_long_only(mu_dummy, cov, target_return=-1e9)

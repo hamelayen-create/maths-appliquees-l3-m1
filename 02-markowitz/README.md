@@ -1,11 +1,11 @@
 # 02 — Optimisation de portefeuille Markowitz
 
 **Niveau :** L3  
-**Maths :** optimisation quadratique, algèbre linéaire, covariance, Lagrange
-
-## Problème
+**Domaine :** finance quantitative  
+**Maths :** optimisation quadratique, multiplicateurs de Lagrange, matrices de covariance, shrinkage, ratio de Sharpe
 
 Minimiser le risque pour un rendement cible \(\mu_p\) :
+
 \[
 \min_w\; w^\top \Sigma w
 \quad\text{s.c.}\quad
@@ -14,16 +14,48 @@ w^\top\mu = \mu_p,\quad
 w \ge 0
 \]
 
-## Méthodes
+## Rapport de cours (polycopié)
 
-- Frontière efficiente analytique (sans contrainte \(w\ge 0\))
-- QP avec CVXPY (long-only)
-- Shrinkage Ledoit–Wolf de la covariance
-- Backtest synthétique (rendements simulés)
+Le cours-projet complet (≥ 15 pages équivalentes) est ici :
+
+- **[report/RAPPORT.md](report/RAPPORT.md)** — théorie, algorithmes, expériences, exercices corrigés
+- **[report/BIBLIOGRAPHY.bib](report/BIBLIOGRAPHY.bib)** — références BibTeX
+- **[report/figures/](report/figures/)** — figures PNG (nuage risque–rendement, frontières, shrinkage, backtest, …)
+- Génération des figures : `python3 report/make_figures.py`
+
+## Méthodes implémentées
+
+| Méthode | Fonction | Fichier |
+|--------|----------|---------|
+| Frontière analytique (Lagrange) | `efficient_frontier_analytic` | `src/portfolio.py` |
+| QP long-only (CVXPY) | `optimize_long_only` | idem |
+| Frontière long-only | `efficient_frontier_long_only` | idem |
+| Shrinkage Ledoit–Wolf (pédagogique) | `ledoit_wolf_cov` | idem |
+| GMV / max Sharpe | `gmv_weights`, `max_sharpe_weights` | idem |
+| Backtest equity | `backtest_equity` | idem |
+| Données synthétiques | `simulate_returns` | idem |
 
 ## Usage
 
+Depuis ce dossier (dépendances : `pip install -r ../requirements.txt`) :
+
 ```bash
-python src/demo.py
-pytest tests/
+python3 src/demo.py
+python3 -m pytest tests/ -q
+python3 report/make_figures.py
+```
+
+## Structure
+
+```text
+02-markowitz/
+  README.md
+  src/portfolio.py   # cœur mathématique
+  src/demo.py
+  tests/
+  report/
+    RAPPORT.md
+    BIBLIOGRAPHY.bib
+    make_figures.py
+    figures/
 ```
