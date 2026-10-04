@@ -6,9 +6,10 @@ venv/
 .env
 .pytest_cache/
 .ipynb_checkpoints/
+# Ignore ad-hoc plots, but keep committed report figures
 *.png
 !docs/**/*.png
+!**/report/figures/**/*.png
 .DS_Store
 .mypy_cache/
-figures/*.png
-**/figures/*.png
+/figures/*.png
