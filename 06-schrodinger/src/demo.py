@@ -10,8 +10,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from quantum import (
     barrier_potential,
+    eigenpairs,
     gaussian_packet,
-    hamiltonian_matrix,
     infinite_well_spectrum,
     norm,
     split_operator_propagate,
@@ -21,20 +21,15 @@ from quantum import (
 
 def main() -> None:
     print("=== Schrödinger 1D ===")
-    # Spectre puits infini approximé par V grand aux bords
+    # Spectre puits infini (Dirichlet via points intérieurs)
     L = 1.0
     n = 300
     x = np.linspace(0, L, n)
-    V = np.zeros(n)
-    # Dirichlet soft: on diagonalise sur points intérieurs implicites via V=0 et H standard
-    # Comparaison analytique pour n=1..3 avec grille Dirichlet stricte
     x_int = x[1:-1]
-    V_int = np.zeros_like(x_int)
-    H = hamiltonian_matrix(x_int, V_int)
-    eigvals = np.sort(np.linalg.eigvalsh(H))
+    energies, _ = eigenpairs(x_int, np.zeros_like(x_int), k=3)
     for k in range(1, 4):
         e_th = infinite_well_spectrum(k, L=L)
-        print(f"E_{k}: num={eigvals[k-1]:.6f}, th={e_th:.6f}, err={abs(eigvals[k-1]-e_th):.3e}")
+        print(f"E_{k}: num={energies[k-1]:.6f}, th={e_th:.6f}, err={abs(energies[k-1]-e_th):.3e}")
 
     # Tunnellisation
     x = np.linspace(-20, 20, 1024)

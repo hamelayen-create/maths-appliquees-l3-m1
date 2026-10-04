@@ -5,11 +5,31 @@ from __future__ import annotations
 import numpy as np
 
 
+def mse(y_true: np.ndarray, y_pred: np.ndarray) -> float:
+    """Erreur quadratique moyenne."""
+    y_true = np.asarray(y_true, dtype=float)
+    y_pred = np.asarray(y_pred, dtype=float)
+    return float(np.mean((y_true - y_pred) ** 2))
+
+
+def r2_score(y_true: np.ndarray, y_pred: np.ndarray) -> float:
+    """Coefficient de détermination R²."""
+    y_true = np.asarray(y_true, dtype=float)
+    y_pred = np.asarray(y_pred, dtype=float)
+    ss_res = float(np.sum((y_true - y_pred) ** 2))
+    ss_tot = float(np.sum((y_true - y_true.mean()) ** 2))
+    if ss_tot == 0.0:
+        return 0.0
+    return 1.0 - ss_res / ss_tot
+
+
 class LinearRegression:
     def __init__(self, ridge: float = 0.0):
         self.ridge = ridge
         self.coef_: np.ndarray | None = None
         self.intercept_: float = 0.0
+        self.loss_history_: list[float] = []
+        self.path_: list[np.ndarray] = []
 
     def fit_normal(self, X: np.ndarray, y: np.ndarray) -> "LinearRegression":
         X = np.asarray(X, dtype=float)
@@ -21,6 +41,8 @@ class LinearRegression:
         beta = np.linalg.solve(X_des.T @ X_des + reg, X_des.T @ y)
         self.intercept_ = float(beta[0])
         self.coef_ = beta[1:]
+        self.loss_history_ = []
+        self.path_ = []
         return self
 
     def fit_gd(
@@ -29,23 +51,36 @@ class LinearRegression:
         y: np.ndarray,
         lr: float = 0.1,
         n_iter: int = 2000,
+        store_path: bool = False,
+        path_every: int = 1,
     ) -> "LinearRegression":
         X = np.asarray(X, dtype=float)
         y = np.asarray(y, dtype=float)
         n, d = X.shape
         w = np.zeros(d)
         b = 0.0
-        for _ in range(n_iter):
+        self.loss_history_ = []
+        self.path_ = []
+        for t in range(n_iter):
             pred = X @ w + b
             err = pred - y
+            loss = 0.5 * float(np.mean(err**2)) + 0.5 * self.ridge * float(np.dot(w, w))
+            self.loss_history_.append(loss)
+            if store_path and (t % path_every == 0):
+                self.path_.append(np.concatenate([[b], w.copy()]))
             w -= lr * ((X.T @ err) / n + self.ridge * w)
             b -= lr * float(err.mean())
         self.coef_ = w
         self.intercept_ = b
+        if store_path:
+            self.path_.append(np.concatenate([[b], w.copy()]))
         return self
 
     def predict(self, X: np.ndarray) -> np.ndarray:
         return np.asarray(X, dtype=float) @ self.coef_ + self.intercept_
+
+    def residuals(self, X: np.ndarray, y: np.ndarray) -> np.ndarray:
+        return np.asarray(y, dtype=float) - self.predict(X)
 
 
 class PCA:
@@ -80,6 +115,12 @@ class LinearSVM:
         self.n_iter = n_iter
         self.w_: np.ndarray | None = None
         self.b_: float = 0.0
+        self.loss_history_: list[float] = []
+
+    def _hinge_objective(self, X: np.ndarray, y: np.ndarray, w: np.ndarray, b: float) -> float:
+        margins = y * (X @ w + b)
+        hinge = np.maximum(0.0, 1.0 - margins)
+        return 0.5 * float(np.dot(w, w)) / len(X) + self.C * float(np.mean(hinge))
 
     def fit(self, X: np.ndarray, y: np.ndarray) -> "LinearSVM":
         X = np.asarray(X, dtype=float)
@@ -90,6 +131,7 @@ class LinearSVM:
         w = np.zeros(d)
         b = 0.0
         rng = np.random.default_rng(0)
+        self.loss_history_ = []
         for t in range(1, self.n_iter + 1):
             i = int(rng.integers(0, n))
             xi, yi = X[i], y[i]
@@ -100,6 +142,8 @@ class LinearSVM:
                 b = b + lr_t * self.C * yi
             else:
                 w = w - lr_t * (w / n)
+            if t % 50 == 0 or t == 1:
+                self.loss_history_.append(self._hinge_objective(X, y, w, b))
         self.w_ = w
         self.b_ = b
         return self
