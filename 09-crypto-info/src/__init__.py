@@ -3,9 +3,14 @@ from .crypto_info import (
     rsa_encrypt,
     rsa_decrypt,
     shannon_entropy,
+    binary_entropy,
     bsc_capacity,
     hamming74_encode,
     hamming74_decode,
+    euler_phi,
+    egcd,
+    modinv,
+    simulate_hamming_ber,
 )
 
 __all__ = [
@@ -13,7 +18,12 @@ __all__ = [
     "rsa_encrypt",
     "rsa_decrypt",
     "shannon_entropy",
+    "binary_entropy",
     "bsc_capacity",
     "hamming74_encode",
     "hamming74_decode",
+    "euler_phi",
+    "egcd",
+    "modinv",
+    "simulate_hamming_ber",
 ]

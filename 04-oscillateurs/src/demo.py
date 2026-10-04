@@ -11,9 +11,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from oscillators import (
     damped_harmonic_analytic,
     fft_spectrum,
+    quality_factor,
     resonance_curve,
     simulate_duffing,
     simulate_forced_oscillator,
+    simulate_free_oscillator,
     steady_state_amplitude,
 )
 
@@ -22,8 +24,11 @@ def main() -> None:
     omega0, gamma = 2.0 * np.pi, 0.3
     t = np.linspace(0, 8, 1000)
     x_ana = damped_harmonic_analytic(t, x0=1.0, v0=0.0, omega0=omega0, gamma=gamma)
+    _, x_num, _ = simulate_free_oscillator((0, 8), (1.0, 0.0), omega0, gamma, n_eval=1000)
+    err = float(np.max(np.abs(x_num - x_ana)))
     print("=== Oscillateurs ===")
     print(f"Libre amorti : |x|(t=0)={x_ana[0]:.4f}, |x|(fin)={abs(x_ana[-1]):.4e}")
+    print(f"Q={quality_factor(omega0, gamma):.3f}, erreur ana/num max={err:.3e}")
 
     omega_drive = omega0
     t_f, x_f = simulate_forced_oscillator(
