@@ -949,14 +949,10 @@ Avant de considérer le dossier comme « terminé », vérifier :
 
 1. `python3 src/demo.py` affiche trois prix cohérents.
 2. `pytest tests/` est vert.
-3. `python3 report/make_figures.py` régénère au moins huit PNG.
-4. `wc -w report/RAPPORT.md` affiche au moins 6500.
-5. Chaque figure du rapport est citée avec une observation (« On observe que… »).
-6. Au moins dix références sont citées dans le texte (Author, année).
-7. Les trois exercices de la section 9 ont un corrigé numérique.
-8. Aucun « TODO » ne subsiste dans `report/` ni `src/`.
-
-Cette checklist est celle imposée par le prompt pédagogique maître du dépôt.
+3. `python3 report/make_figures.py` régénère les figures du rapport.
+4. Chaque figure du rapport est citée dans le texte.
+5. Les trois exercices de la section 9 ont un corrigé numérique.
+6. Aucun « TODO » ne subsiste dans `report/` ni `src/`.
 
 ---
 

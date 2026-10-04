@@ -1,10 +1,12 @@
 # Maths appliquées L3 / M1
 
-Neuf projets de mathématiques appliquées (finance, physique, informatique), pensés pour un portfolio GitHub : théorie courte, code exécutable, tests et figures.
+Rayane Hamel, licence de mathématiques, Sorbonne Université.
+
+Neuf projets (finance, physique, informatique) : un court texte, le code, des tests et des figures. Pour une première lecture, ouvrir [`01-black-scholes`](01-black-scholes).
 
 ## Projets
 
-Chaque dossier contient un **rapport pédagogique approfondi** (`report/RAPPORT.md`, ≈15+ pages), des figures, le code et des tests.
+Chaque dossier contient un rapport (`report/RAPPORT.md`), des figures, le code et des tests.
 
 | # | Dossier | Domaine | Niveau | Thème | Rapport |
 |---|---------|---------|--------|-------|---------|
@@ -17,8 +19,6 @@ Chaque dossier contient un **rapport pédagogique approfondi** (`report/RAPPORT.
 | 7 | [`07-pagerank`](07-pagerank) | Info | L3 | PageRank, Markov, algèbre linéaire sparse | [rapport](07-pagerank/report/RAPPORT.md) |
 | 8 | [`08-ml-from-scratch`](08-ml-from-scratch) | Info | L3/M1 | Régression, PCA, SVM soft-margin | [rapport](08-ml-from-scratch/report/RAPPORT.md) |
 | 9 | [`09-crypto-info`](09-crypto-info) | Info | L3 | RSA pédagogique, entropie, code de Hamming | [rapport](09-crypto-info/report/RAPPORT.md) |
-
-Pour régénérer les prompts d’approfondissement : `python3 scripts/generer_prompts_pedagogiques.py`
 
 ## Installation
 
@@ -51,18 +51,6 @@ python 02-markowitz/src/demo.py
   tests/         # pytest
   notebooks/     # explorations (optionnel)
 ```
-
-## Publier sur GitHub
-
-```bash
-cd maths-appliquees-l3-m1
-# créer un repo vide sur GitHub, puis :
-git remote add origin git@github.com:<ton-user>/<ton-repo>.git
-git branch -M main
-git push -u origin main
-```
-
-Ou conserve la branche actuelle `cursor/maths-appliquees-l3-m1-f007` et pousse-la telle quelle.
 
 ## Licence
 
