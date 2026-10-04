@@ -13,17 +13,17 @@ Cours-projet autonome : de la physique 1D (barre thermique, corde vibrante) jusq
 
 ## Problèmes
 
-- Chaleur 1D : \(u_t = \kappa u_{xx}\)
-- Onde 1D : \(u_{tt} = c^2 u_{xx}\)
+- Chaleur 1D : $u_t = \kappa u_{xx}$
+- Onde 1D : $u_{tt} = c^2 u_{xx}$
 
 ## Méthodes (code dans `src/pde.py`)
 
 | Schéma | Fonction | Stabilité |
 |--------|----------|-----------|
-| FTCS | `heat_ftcs` | \(r=\kappa\Delta t/\Delta x^2\le 1/2\) |
+| FTCS | `heat_ftcs` | $r=\kappa\Delta t/\Delta x^2\le 1/2$ |
 | BTCS | `heat_btcs` | inconditionnelle |
 | Crank–Nicolson | `heat_crank_nicolson` | inconditionnelle |
-| Leapfrog | `wave_leapfrog` | CFL \(\lambda=c\Delta t/\Delta x\le 1\) |
+| Leapfrog | `wave_leapfrog` | CFL $\lambda=c\Delta t/\Delta x\le 1$ |
 
 ## Usage
 

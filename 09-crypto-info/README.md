@@ -12,7 +12,7 @@ Comment chiffrer un message avec de l’arithmétique modulaire, mesurer l’inc
 
 ## Contenu
 
-- RSA pédagogique (Euclide étendu, \(\varphi(n)\), petites clés)
+- RSA pédagogique (Euclide étendu, $\varphi(n)$, petites clés)
 - Entropie de Shannon, entropie binaire, capacité du canal BSC
 - Code de Hamming (7,4) : encodage, syndrome, correction 1 bit
 - Expériences BER avant/après correction + figures

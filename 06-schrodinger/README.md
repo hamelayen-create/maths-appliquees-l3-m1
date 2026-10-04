@@ -6,7 +6,7 @@
 
 ## Accroche
 
-Comment calculer le spectre d’un puits quantique, propager un paquet d’ondes sans casser la norme \(L^2\), et mesurer l’effet tunnel à travers une barrière ? Ce module répond par un mini-solveur 1D (différences finies + split-operator FFT) et un polycopié complet.
+Comment calculer le spectre d’un puits quantique, propager un paquet d’ondes sans casser la norme $L^2$, et mesurer l’effet tunnel à travers une barrière ? Ce module répond par un mini-solveur 1D (différences finies + split-operator FFT) et un polycopié complet.
 
 ## Rapport de cours
 
@@ -20,9 +20,9 @@ Polycopié autonome (≥ 15 pages équivalentes) :
 ## Problème
 
 Résoudre numériquement
-\[
+$$
 i\hbar\partial_t\psi = -\frac{\hbar^2}{2m}\partial_{xx}\psi + V(x)\psi
-\]
+$$
 en 1D : spectre d’un puits, propagation d’un paquet, tunnellisation.
 
 ## Méthodes
@@ -30,7 +30,7 @@ en 1D : spectre d’un puits, propagation d’un paquet, tunnellisation.
 - Discrétisation du Hamiltonien (différences finies)
 - Diagonalisation dense pour les états stationnaires (`eigenpairs`)
 - Split-operator FFT (Strang) pour la dynamique
-- Conservation de \(\|\psi\|_2\) et estimateurs transmission / réflexion
+- Conservation de $\|\psi\|_2$ et estimateurs transmission / réflexion
 
 ## Usage
 

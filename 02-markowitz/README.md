@@ -4,15 +4,15 @@
 **Domaine :** finance quantitative  
 **Maths :** optimisation quadratique, multiplicateurs de Lagrange, matrices de covariance, shrinkage, ratio de Sharpe
 
-Minimiser le risque pour un rendement cible \(\mu_p\) :
+Minimiser le risque pour un rendement cible $\mu_p$ :
 
-\[
+$$
 \min_w\; w^\top \Sigma w
 \quad\text{s.c.}\quad
 w^\top\mu = \mu_p,\quad
 \mathbf{1}^\top w = 1,\quad
 w \ge 0
-\]
+$$
 
 ## Rapport de cours (polycopié)
 

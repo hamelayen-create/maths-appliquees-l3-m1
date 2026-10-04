@@ -18,7 +18,7 @@ Polycopié complet (≥ 15 pages équivalentes) :
 
 - Solutions analytiques (libre : 3 régimes ; forcé : régime permanent)
 - Intégration RK4 (pédagogique) et RK45 (SciPy)
-- Courbe de résonance \(A(\omega)\), facteur de qualité \(Q\)
+- Courbe de résonance $A(\omega)$, facteur de qualité $Q$
 - Spectre FFT et section de Poincaré (Duffing)
 
 ## Usage

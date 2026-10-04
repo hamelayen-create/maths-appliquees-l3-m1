@@ -3,7 +3,7 @@
 **Niveau :** M1 — Finance quantitative  
 **Maths :** inversion numérique Black–Scholes, optimisation non linéaire, modèle SVI raw, no-arbitrage butterfly/calendar
 
-Les prix d’options ne se résument pas à une volatilité constante. Ce projet montre comment extraire le **smile** \(\sigma_{\mathrm{imp}}(K)\), le paramétriser par **SVI**, diagnostiquer les arbitrages, puis construire une **surface** simple.
+Les prix d’options ne se résument pas à une volatilité constante. Ce projet montre comment extraire le **smile** $\sigma_{\mathrm{imp}}(K)$, le paramétriser par **SVI**, diagnostiquer les arbitrages, puis construire une **surface** simple.
 
 ## Rapport de cours
 
@@ -16,20 +16,20 @@ Cours-projet complet (≥ 15 pages équivalentes) :
 
 ## Problème
 
-À partir de prix de calls, extraire \(\sigma_{\mathrm{imp}}(K)\) puis calibrer un smile SVI :
+À partir de prix de calls, extraire $\sigma_{\mathrm{imp}}(K)$ puis calibrer un smile SVI :
 
-\[
+$$
 w(k) = a + b\bigl(\rho(k-m)+\sqrt{(k-m)^2+\sigma^2}\bigr)
-\]
+$$
 
-où \(k=\log(K/F)\) et \(w=\sigma_{\mathrm{imp}}^2 T\).
+où $k=\log(K/F)$ et $w=\sigma_{\mathrm{imp}}^2 T$.
 
 ## Méthodes
 
 1. Implied vol par Brent (et Newton en comparaison)
 2. Fit SVI par moindres carrés bornés (TRF)
-3. Diagnostic butterfly \(g(k)\ge 0\) et projection calendaire
-4. Construction d’une surface \(w(k,T)\) / \(\sigma(K,T)\)
+3. Diagnostic butterfly $g(k)\ge 0$ et projection calendaire
+4. Construction d’une surface $w(k,T)$ / $\sigma(K,T)$
 
 ## Structure du code
 
