@@ -350,7 +350,9 @@ Tu dois **enrichir le projet GitHub** (pas seulement discuter) :
 
 1. **Français impeccable**, ton de polycopié de cours (clair, précis, sans blabla).
 2. **Progression pédagogique :** intuition → formalisation → preuve/raisonnement → algo → expérience → limites.
-3. **Équations soignées** (Markdown/LaTeX). Chaque symbole important est défini.
+3. **Équations soignées** (Markdown/LaTeX **compatible GitHub**).
+   Utiliser uniquement `$...$` (inline) et `$$...$$` (display), **jamais** `\\(...\\)` ni `\\[...\\]`.
+   Chaque symbole important est défini. Échapper `<`/`>` hors maths (`&lt;` / `&gt;`) pour éviter un rendu HTML cassé.
 4. **Au moins 8 figures/schémas** dont obligatoirement :
 {figures}
 5. **Au moins 2 tableaux** (complexités, hyperparamètres, erreurs numériques, comparaisons de méthodes…).
