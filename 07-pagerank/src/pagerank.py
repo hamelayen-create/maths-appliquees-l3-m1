@@ -33,18 +33,41 @@ def pagerank_power(
     alpha: float = 0.85,
     tol: float = 1e-10,
     max_iter: int = 200,
-) -> np.ndarray:
+    return_history: bool = False,
+) -> np.ndarray | tuple[np.ndarray, list[float]]:
+    """Méthode de la puissance pour le PageRank Google.
+
+    Parameters
+    ----------
+    adj : sparse adjacency (0/1), shape (n, n)
+    alpha : facteur d'amortissement (damping), typiquement 0.85
+    tol : seuil sur ||r_{k+1} - r_k||_1
+    max_iter : nombre maximal d'itérations
+    return_history : si True, renvoie aussi la liste des résidus L1
+
+    Returns
+    -------
+    r : vecteur de scores (somme 1)
+    history : optionnel, résidus L1 par itération
+    """
     P, dangling = _transition_matrix(adj)
     n = P.shape[0]
     r = np.ones(n) / n
     teleport = (1 - alpha) / n
+    history: list[float] = []
     for _ in range(max_iter):
         # contribution dangling : masse redistribuée uniformément
         dangling_mass = alpha * r[dangling].sum() / n if dangling.any() else 0.0
         r_new = alpha * (P.T @ r) + dangling_mass + teleport
-        if np.linalg.norm(r_new - r, 1) < tol:
+        resid = float(np.linalg.norm(r_new - r, 1))
+        history.append(resid)
+        if resid < tol:
+            if return_history:
+                return r_new, history
             return r_new
         r = r_new
+    if return_history:
+        return r, history
     return r
 
 
