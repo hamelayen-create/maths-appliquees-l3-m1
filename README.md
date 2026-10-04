@@ -4,17 +4,21 @@ Neuf projets de mathématiques appliquées (finance, physique, informatique), pe
 
 ## Projets
 
-| # | Dossier | Domaine | Niveau | Thème |
-|---|---------|---------|--------|-------|
-| 1 | [`01-black-scholes`](01-black-scholes) | Finance | L3/M1 | Black–Scholes : formule fermée, EDP, Monte Carlo |
-| 2 | [`02-markowitz`](02-markowitz) | Finance | L3 | Optimisation de portefeuille (Markowitz / QP) |
-| 3 | [`03-vol-smile`](03-vol-smile) | Finance | M1 | Volatilité implicite, smile SVI, surface |
-| 4 | [`04-oscillateurs`](04-oscillateurs) | Physique | L3 | Oscillateurs, résonance, Duffing, Fourier |
-| 5 | [`05-edp-chaleur-ondes`](05-edp-chaleur-ondes) | Physique | L3/M1 | EDP chaleur / ondes, différences finies |
-| 6 | [`06-schrodinger`](06-schrodinger) | Physique | M1 | Schrödinger 1D : spectre et paquets d'ondes |
-| 7 | [`07-pagerank`](07-pagerank) | Info | L3 | PageRank, Markov, algèbre linéaire sparse |
-| 8 | [`08-ml-from-scratch`](08-ml-from-scratch) | Info | L3/M1 | Régression, PCA, SVM soft-margin |
-| 9 | [`09-crypto-info`](09-crypto-info) | Info | L3 | RSA pédagogique, entropie, code de Hamming |
+Chaque dossier contient un **rapport pédagogique approfondi** (`report/RAPPORT.md`, ≈15+ pages), des figures, le code et des tests.
+
+| # | Dossier | Domaine | Niveau | Thème | Rapport |
+|---|---------|---------|--------|-------|---------|
+| 1 | [`01-black-scholes`](01-black-scholes) | Finance | L3/M1 | Black–Scholes : formule fermée, EDP, Monte Carlo | [rapport](01-black-scholes/report/RAPPORT.md) |
+| 2 | [`02-markowitz`](02-markowitz) | Finance | L3 | Optimisation de portefeuille (Markowitz / QP) | [rapport](02-markowitz/report/RAPPORT.md) |
+| 3 | [`03-vol-smile`](03-vol-smile) | Finance | M1 | Volatilité implicite, smile SVI, surface | [rapport](03-vol-smile/report/RAPPORT.md) |
+| 4 | [`04-oscillateurs`](04-oscillateurs) | Physique | L3 | Oscillateurs, résonance, Duffing, Fourier | [rapport](04-oscillateurs/report/RAPPORT.md) |
+| 5 | [`05-edp-chaleur-ondes`](05-edp-chaleur-ondes) | Physique | L3/M1 | EDP chaleur / ondes, différences finies | [rapport](05-edp-chaleur-ondes/report/RAPPORT.md) |
+| 6 | [`06-schrodinger`](06-schrodinger) | Physique | M1 | Schrödinger 1D : spectre et paquets d'ondes | [rapport](06-schrodinger/report/RAPPORT.md) |
+| 7 | [`07-pagerank`](07-pagerank) | Info | L3 | PageRank, Markov, algèbre linéaire sparse | [rapport](07-pagerank/report/RAPPORT.md) |
+| 8 | [`08-ml-from-scratch`](08-ml-from-scratch) | Info | L3/M1 | Régression, PCA, SVM soft-margin | [rapport](08-ml-from-scratch/report/RAPPORT.md) |
+| 9 | [`09-crypto-info`](09-crypto-info) | Info | L3 | RSA pédagogique, entropie, code de Hamming | [rapport](09-crypto-info/report/RAPPORT.md) |
+
+Pour régénérer les prompts d’approfondissement : `python3 scripts/generer_prompts_pedagogiques.py`
 
 ## Installation
 
